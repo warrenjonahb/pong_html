@@ -38,7 +38,7 @@
   <div class="game-wrapper">
     <canvas id="gameCanvas" width="900" height="600"></canvas>
     <div class="instructions">
-      Drive: Arrow Keys or WASD | Reset: R | Complete 3 laps as fast as possible!
+      Easy controls: Hold Up/W to drive, Left/Right or A/D to steer | Reset: R | Complete 3 laps!
     </div>
   </div>
 
@@ -65,12 +65,14 @@
       height: 42,
       angle: -Math.PI / 2,
       speed: 0,
-      maxTrackSpeed: 5.3,
-      maxGrassSpeed: 2.0,
-      acceleration: 0.16,
-      braking: 0.22,
-      friction: 0.96,
-      turnSpeed: 0.055
+
+      // Easier arcade-style controls
+      maxTrackSpeed: 4.4,
+      maxGrassSpeed: 2.4,
+      acceleration: 0.24,
+      braking: 0.28,
+      friction: 0.90,
+      turnSpeed: 0.08
     };
 
     let lap = 0;
@@ -190,8 +192,10 @@
       car.speed *= car.friction;
       car.speed = Math.max(-maxSpeed / 2, Math.min(maxSpeed, car.speed));
 
-      if (Math.abs(car.speed) > 0.2) {
-        const direction = car.speed > 0 ? 1 : -1;
+      // Easier steering: allow the car to turn even at very low speed.
+      // This feels more forgiving for kids/new players.
+      if (Math.abs(car.speed) > 0.05 || accelerating || reversing) {
+        const direction = car.speed >= 0 ? 1 : -1;
 
         if (turningLeft) {
           car.angle -= car.turnSpeed * direction;
@@ -344,7 +348,7 @@
         ctx.font = "28px Arial";
         ctx.fillText("Top Down Racing", WIDTH / 2 - 115, HEIGHT / 2 - 15);
         ctx.font = "18px Arial";
-        ctx.fillText("Press Up/W or Down/S to start the timer", WIDTH / 2 - 160, HEIGHT / 2 + 25);
+        ctx.fillText("Hold Up/W to drive and steer with Left/Right", WIDTH / 2 - 175, HEIGHT / 2 + 25);
       }
 
       if (raceFinished) {
